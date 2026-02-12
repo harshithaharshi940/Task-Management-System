@@ -1,80 +1,114 @@
-# EE First
+[npm-image]: https://img.shields.io/npm/v/mysql2.svg
+[npm-url]: https://npmjs.com/package/mysql2
+[node-version-image]: https://img.shields.io/node/v/mysql2.svg
+[node-version-url]: https://nodejs.org/en/download
+[downloads-image]: https://img.shields.io/npm/dm/mysql2.svg
+[downloads-url]: https://npmjs.com/package/mysql2
+[license-url]: https://github.com/sidorares/node-mysql2/blob/master/License
+[license-image]: https://img.shields.io/npm/l/mysql2.svg?maxAge=2592000
+[node-mysql]: https://github.com/mysqljs/mysql
+[mysqljs]: https://github.com/mysqljs
+[mysql-native]: https://github.com/sidorares/nodejs-mysql-native
+[sidorares]: https://github.com/sidorares
+[TooTallNate]: https://gist.github.com/TooTallNate
+[starttls.js]: https://gist.github.com/TooTallNate/848444
+[node-mariasql]: https://github.com/mscdex/node-mariasql
+[contributors]: https://github.com/sidorares/node-mysql2/graphs/contributors
+[contributing]: https://github.com/sidorares/node-mysql2/blob/master/Contributing.md
+[docs-base]: https://sidorares.github.io/node-mysql2/docs
+[docs-base-zh-CN]: https://sidorares.github.io/node-mysql2/zh-CN/docs
+[docs-base-pt-BR]: https://sidorares.github.io/node-mysql2/pt-BR/docs
+[docs-prepared-statements]: https://sidorares.github.io/node-mysql2/docs/documentation/prepared-statements
+[docs-mysql-server]: https://sidorares.github.io/node-mysql2/docs/documentation/mysql-server
+[docs-promise-wrapper]: https://sidorares.github.io/node-mysql2/docs/documentation/promise-wrapper
+[docs-authentication-switch]: https://sidorares.github.io/node-mysql2/docs/documentation/authentication-switch
+[docs-streams]: https://sidorares.github.io/node-mysql2/docs/documentation/extras
+[docs-typescript-docs]: https://sidorares.github.io/node-mysql2/docs/documentation/typescript-examples
+[docs-qs-pooling]: https://sidorares.github.io/node-mysql2/docs#using-connection-pools
+[docs-qs-first-query]: https://sidorares.github.io/node-mysql2/docs#first-query
+[docs-qs-using-prepared-statements]: https://sidorares.github.io/node-mysql2/docs#using-prepared-statements
+[docs-examples]: https://sidorares.github.io/node-mysql2/docs/examples
+[docs-faq]: https://sidorares.github.io/node-mysql2/docs/faq
+[docs-documentation]: https://sidorares.github.io/node-mysql2/docs/documentation
+[docs-contributing]: https://sidorares.github.io/node-mysql2/docs/contributing/website
+[coverage]: https://img.shields.io/codecov/c/github/sidorares/node-mysql2
+[coverage-url]: https://app.codecov.io/github/sidorares/node-mysql2
+[ci-url]: https://github.com/sidorares/node-mysql2/actions/workflows/ci-coverage.yml?query=branch%3Amaster
+[ci-image]: https://img.shields.io/github/actions/workflow/status/sidorares/node-mysql2/ci-coverage.yml?event=push&style=flat&label=CI&branch=master
 
-[![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
+# MySQL2
+
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![GitHub Workflow Status (with event)][ci-image]][ci-url]
+[![Codecov][coverage]][coverage-url]
 [![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
-[![Gittip][gittip-image]][gittip-url]
 
-Get the first event in a set of event emitters and event pairs,
-then clean up after itself.
+[English][docs-base] | [简体中文][docs-base-zh-CN] | [Português (BR)][docs-base-pt-BR]
 
-## Install
+> MySQL client for Node.js with focus on performance. Supports prepared statements, non-utf8 encodings, binary log protocol, compression, ssl [much more][docs-documentation].
 
-```sh
-$ npm install ee-first
+**Table of Contents**
+
+- [History and Why MySQL2](#history-and-why-mysql2)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Acknowledgements](#acknowledgements)
+- [Contributing](#contributing)
+
+## History and Why MySQL2
+
+MySQL2 project is a continuation of [MySQL-Native][mysql-native]. Protocol parser code was rewritten from scratch and api changed to match popular [Node MySQL][node-mysql]. MySQL2 team is working together with [Node MySQL][node-mysql] team to factor out shared code and move it under [mysqljs][mysqljs] organization.
+
+MySQL2 is mostly API compatible with [Node MySQL][node-mysql] and supports majority of features. MySQL2 also offers these additional features:
+
+- Faster / Better Performance
+- [Prepared Statements][docs-prepared-statements]
+- MySQL Binary Log Protocol
+- [MySQL Server][docs-mysql-server]
+- Extended support for Encoding and Collation
+- [Promise Wrapper][docs-promise-wrapper]
+- Compression
+- SSL and [Authentication Switch][docs-authentication-switch]
+- [Custom Streams][docs-streams]
+- [Pooling][docs-qs-pooling]
+
+## Installation
+
+MySQL2 is free from native bindings and can be installed on Linux, Mac OS or Windows without any issues.
+
+```bash
+npm install --save mysql2
 ```
 
-## API
+If you are using TypeScript, you will need to install `@types/node`.
 
-```js
-var first = require('ee-first')
+```bash
+npm install --save-dev @types/node
 ```
 
-### first(arr, listener)
+> For TypeScript documentation and examples, see [here][docs-typescript-docs].
 
-Invoke `listener` on the first event from the list specified in `arr`. `arr` is
-an array of arrays, with each array in the format `[ee, ...event]`. `listener`
-will be called only once, the first time any of the given events are emitted. If
-`error` is one of the listened events, then if that fires first, the `listener`
-will be given the `err` argument.
+## Documentation
 
-The `listener` is invoked as `listener(err, ee, event, args)`, where `err` is the
-first argument emitted from an `error` event, if applicable; `ee` is the event
-emitter that fired; `event` is the string event name that fired; and `args` is an
-array of the arguments that were emitted on the event.
+- [Quickstart][docs-base]
+  - [First Query][docs-qs-first-query], [Using Prepared Statements][docs-qs-using-prepared-statements], [Using Connection Pools][docs-qs-pooling] and more.
+- [Documentation][docs-documentation]
+- [Examples][docs-examples]
+- [FAQ][docs-faq]
 
-```js
-var ee1 = new EventEmitter()
-var ee2 = new EventEmitter()
+## Acknowledgements
 
-first([
-  [ee1, 'close', 'end', 'error'],
-  [ee2, 'error']
-], function (err, ee, event, args) {
-  // listener invoked
-})
-```
+- Internal protocol is written by [@sidorares][sidorares] [MySQL-Native][mysql-native].
+- Constants, SQL parameters interpolation, Pooling, `ConnectionConfig` class taken from [Node MySQL][node-mysql].
+- SSL upgrade code based on [@TooTallNate][TooTallNate] [code][starttls.js].
+- Secure connection / compressed connection api flags compatible to [MariaSQL][node-mariasql] client.
+- [Contributors][contributors].
 
-#### .cancel()
+## Contributing
 
-The group of listeners can be cancelled before being invoked and have all the event
-listeners removed from the underlying event emitters.
+Want to improve something in **MySQL2**?
+Please check [Contributing.md][contributing] for detailed instruction on how to get started.
 
-```js
-var thunk = first([
-  [ee1, 'close', 'end', 'error'],
-  [ee2, 'error']
-], function (err, ee, event, args) {
-  // listener invoked
-})
-
-// cancel and clean up
-thunk.cancel()
-```
-
-[npm-image]: https://img.shields.io/npm/v/ee-first.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/ee-first
-[github-tag]: http://img.shields.io/github/tag/jonathanong/ee-first.svg?style=flat-square
-[github-url]: https://github.com/jonathanong/ee-first/tags
-[travis-image]: https://img.shields.io/travis/jonathanong/ee-first.svg?style=flat-square
-[travis-url]: https://travis-ci.org/jonathanong/ee-first
-[coveralls-image]: https://img.shields.io/coveralls/jonathanong/ee-first.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/jonathanong/ee-first?branch=master
-[license-image]: http://img.shields.io/npm/l/ee-first.svg?style=flat-square
-[license-url]: LICENSE.md
-[downloads-image]: http://img.shields.io/npm/dm/ee-first.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/ee-first
-[gittip-image]: https://img.shields.io/gittip/jonathanong.svg?style=flat-square
-[gittip-url]: https://www.gittip.com/jonathanong/
+To contribute in **MySQL2 Documentation**, please visit the [Website Contributing Guidelines][docs-contributing] for detailed instruction on how to get started.

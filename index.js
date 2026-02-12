@@ -1,95 +1,77 @@
-/*!
- * ee-first
- * Copyright(c) 2014 Jonathan Ong
- * MIT Licensed
- */
+'use strict';
 
-'use strict'
+const SqlString = require('sqlstring');
 
-/**
- * Module exports.
- * @public
- */
+const ConnectionConfig = require('./lib/connection_config.js');
+const parserCache = require('./lib/parsers/parser_cache.js');
 
-module.exports = first
+const Connection = require('./lib/connection.js');
 
-/**
- * Get the first event in a set of event emitters and event pairs.
- *
- * @param {array} stuff
- * @param {function} done
- * @public
- */
+exports.createConnection = require('./lib/create_connection.js');
+exports.connect = exports.createConnection;
+exports.Connection = Connection;
+exports.ConnectionConfig = ConnectionConfig;
 
-function first(stuff, done) {
-  if (!Array.isArray(stuff))
-    throw new TypeError('arg must be an array of [ee, events...] arrays')
+const Pool = require('./lib/pool.js');
+const PoolCluster = require('./lib/pool_cluster.js');
+const createPool = require('./lib/create_pool.js');
+const createPoolCluster = require('./lib/create_pool_cluster.js');
 
-  var cleanups = []
+exports.createPool = createPool;
 
-  for (var i = 0; i < stuff.length; i++) {
-    var arr = stuff[i]
+exports.createPoolCluster = createPoolCluster;
 
-    if (!Array.isArray(arr) || arr.length < 2)
-      throw new TypeError('each array member must be [ee, events...]')
+exports.createQuery = Connection.createQuery;
 
-    var ee = arr[0]
+exports.Pool = Pool;
 
-    for (var j = 1; j < arr.length; j++) {
-      var event = arr[j]
-      var fn = listener(event, callback)
+exports.PoolCluster = PoolCluster;
 
-      // listen to the event
-      ee.on(event, fn)
-      // push this listener to the list of cleanups
-      cleanups.push({
-        ee: ee,
-        event: event,
-        fn: fn,
-      })
-    }
+exports.createServer = function (handler) {
+  const Server = require('./lib/server.js');
+  const s = new Server();
+  if (handler) {
+    s.on('connection', handler);
   }
+  return s;
+};
 
-  function callback() {
-    cleanup()
-    done.apply(null, arguments)
-  }
+exports.PoolConnection = require('./lib/pool_connection.js');
+exports.authPlugins = require('./lib/auth_plugins');
+exports.escape = SqlString.escape;
+exports.escapeId = SqlString.escapeId;
+exports.format = SqlString.format;
+exports.raw = SqlString.raw;
 
-  function cleanup() {
-    var x
-    for (var i = 0; i < cleanups.length; i++) {
-      x = cleanups[i]
-      x.ee.removeListener(x.event, x.fn)
-    }
-  }
+exports.__defineGetter__(
+  'createConnectionPromise',
+  () => require('./promise.js').createConnection
+);
 
-  function thunk(fn) {
-    done = fn
-  }
+exports.__defineGetter__(
+  'createPoolPromise',
+  () => require('./promise.js').createPool
+);
 
-  thunk.cancel = cleanup
+exports.__defineGetter__(
+  'createPoolClusterPromise',
+  () => require('./promise.js').createPoolCluster
+);
 
-  return thunk
-}
+exports.__defineGetter__('Types', () => require('./lib/constants/types.js'));
 
-/**
- * Create the event listener.
- * @private
- */
+exports.__defineGetter__('Charsets', () =>
+  require('./lib/constants/charsets.js')
+);
 
-function listener(event, done) {
-  return function onevent(arg1) {
-    var args = new Array(arguments.length)
-    var ee = this
-    var err = event === 'error'
-      ? arg1
-      : null
+exports.__defineGetter__('CharsetToEncoding', () =>
+  require('./lib/constants/charset_encodings.js')
+);
 
-    // copy args to prevent arguments escaping scope
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i]
-    }
+exports.setMaxParserCache = function (max) {
+  parserCache.setMaxCache(max);
+};
 
-    done(err, ee, event, args)
-  }
-}
+exports.clearParserCache = function () {
+  parserCache.clearCache();
+};
